@@ -110,14 +110,13 @@ all_clusters <- function(ds_mat, folder_name, core_num, which_cl = c("average","
   ## RSL / Cluster Tree 
   if ("rsl" %in% which_cl){
     cat("Running RSL\n")
-    # devtools::install_github("peekxc/clustertree")
+    devtools::install_github("peekxc/clustertree")
     with(new.env(), expr = {
-      k_init <- floor(ncol(ds_mat)*log(nrow(ds_mat)))
-      k <- k_init:(k_init + min(c(nrow(ds_mat) - k_init), 15L))
+      k_init <- floor(ncol(ds_mat)*log(nrow(ds_mat))) ## Optimal setting as given by Chaudhuri's analysis. 
+      k <- seq(k_init, 2*k_init, by = 2) ## Practically speaking, noisier data sets may require a slightly higher setting
       rsl_cl <- pblapply(k, function(k_){
-        # cltree <- clustertree::clustertree(x = ds_dist, k = k_, estimator = "RSL")
-        # dbscan::extractFOSC(cltree$hc, minPts = k_)$cluster
-        dbscan::hdbscan(ds_mat, minPts = ncol(ds_mat)*log(nrow(ds_mat)))$cluster
+        cltree <- clustertree::clustertree(x = ds_dist, k = k_, alpha = sqrt(2), estimator = "RSL")
+        dbscan::extractFOSC(cltree$hc, minPts = k_)$cluster
       })
       rsl_cl <- do.call(cbind, rsl_cl)
       save(rsl_cl, file = file.path(paste0(folder_name, "/rsl_cl.rdata"))) 
