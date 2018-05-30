@@ -110,7 +110,7 @@ all_clusters <- function(ds_mat, folder_name, core_num, which_cl = c("average","
   ## RSL / Cluster Tree 
   if ("rsl" %in% which_cl){
     cat("Running RSL\n")
-    devtools::install_github("peekxc/clustertree")
+    # devtools::install_github("peekxc/clustertree")
     with(new.env(), expr = {
       k_init <- floor(ncol(ds_mat)*log(nrow(ds_mat))) ## Optimal setting as given by Chaudhuri's analysis. 
       k <- seq(k_init, 2*k_init, by = 2) ## Practically speaking, noisier data sets may require a slightly higher setting
