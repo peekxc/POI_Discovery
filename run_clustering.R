@@ -16,7 +16,7 @@ all_clusters <- function(ds_mat, folder_name, core_num, which_cl = c("average","
   
   ## Setup parameter settings 
   k <- seq(5, min(c(300, nrow(ds_mat) - 1)), by = 5)
-  ds_dist <- dist(ds_mat, method = "euclidean")
+  ds_dist <- parallelDist::parallelDist(ds_mat, method = "euclidean")
   minPts <- seq(2, 40, by = 5)
   
   if ("kmeans" %in% which_cl){
