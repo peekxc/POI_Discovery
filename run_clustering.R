@@ -13,6 +13,7 @@ all_clusters <- function(ds_mat, folder_name, core_num, which_cl = c("average","
   library("pbapply")
   library("dbscan")
   library("clustertree")
+  library("parallelDist")
   
   ## Setup parameter settings 
   k <- seq(5, min(c(300, nrow(ds_mat) - 1)), by = 5)

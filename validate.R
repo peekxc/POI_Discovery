@@ -42,11 +42,11 @@ validate <- function(ds_mat, folder_name, core_num,
     cat("Running DBCV score...\n")
     x_dbcv <- pbapply::pbapply(x_cl, 2, function(cl){ DBCV(x = ds_mat, cl = cl, xdist = ds_dist) },  cl = core_num)
     
-    cat("Running Calinski-Harabasz score...\n")
-    x_ch <- pbapply::pbapply(x_cl, 2, function(cl){ CH(x = ds_mat, cl = cl) }, cl = core_num)
+    # cat("Running Calinski-Harabasz score...\n")
+    # x_ch <- pbapply::pbapply(x_cl, 2, function(cl){ CH(x = ds_mat, cl = cl) }, cl = core_num)
     
-    cat("Running Silhouette score...\n")
-    x_sil <- pbapply::pbapply(x_cl, 2, function(cl){ SIL(x = ds_mat, cl = cl, xdist = ds_dist) }, cl = core_num)
+    # cat("Running Silhouette score...\n")
+    # x_sil <- pbapply::pbapply(x_cl, 2, function(cl){ SIL(x = ds_mat, cl = cl, xdist = ds_dist) }, cl = core_num)
     
     # { rm(ds_dist); gc() } ## cleanup 
     
@@ -55,7 +55,7 @@ validate <- function(ds_mat, folder_name, core_num,
     
     ## Save scores 
     cat(sprintf("Saving scores for %s...\n", cl_file))
-    x_scores <- list(x_ch, x_sil, x_dbcv) # x_db
+    x_scores <- list(x_dbcv) # x_db, x_ch, x_sil, 
     save(x_scores, file = score_file)
   }
 }
