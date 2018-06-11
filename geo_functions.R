@@ -2,6 +2,21 @@ library("sp")
 library("rgdal")
 library("pbapply")
 
+## Converts a set of points into an n x m grid 
+discretize_grid <- function(x, n, m){
+  x_rng <- apply(x, 2, range)
+  x_breaks <- seq(from = x_rng[1, 1], to = x_rng[2, 1], length.out = n)
+  y_breaks <- seq(from = x_rng[1, 2], to = x_rng[2, 2], length.out = m)
+  x_idx <- findInterval(x[, 1], vec = x_breaks)
+  y_idx <- findInterval(x[, 2], vec = y_breaks)
+  grid_idx <- expand.grid(1:n, 1:m)
+  res <- apply(grid_idx, 1, function(idx){
+    x[x_idx == idx[1] & y_idx == idx[2],]
+  })
+  names(res) <- apply(grid_idx, 1, function(idx) paste0(as.character(idx), collapse = ","))
+  return(res)
+}
+
 ## Converts character strings to Title Case
 titleCase <- function(x) { s <- strsplit(x, " ")[[1]]; paste(toupper(substring(s, 1,1)), substring(s, 2), sep="", collapse=" ") }
 

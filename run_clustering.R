@@ -23,7 +23,10 @@ all_clusters <- function(ds_mat, folder_name, core_num, which_cl = c("average","
   if ("kmeans" %in% which_cl){
     cat("Running K-means\n")
     with(new.env(), expr = {
-      km_cl <- pbsapply(k, function(ki) { kmeans(x = ds_mat, centers = ki)$cluster }, cl = core_num)
+      km_cl <- pbsapply(k, function(ki) { 
+        if (ki > nrow(ds_mat)){ rep(NA, nrow(ds_mat)) }
+        else { kmeans(x = ds_mat, centers = ki)$cluster }
+      }, cl = core_num)
       save(km_cl, file = file.path(paste0(folder_name, "/km_cl.rdata")))
     }); gc()
   }
@@ -118,7 +121,7 @@ all_clusters <- function(ds_mat, folder_name, core_num, which_cl = c("average","
         cltree <- clustertree::clustertree(x = ds_dist, k = k_, alpha = sqrt(2), estimator = "RSL")
         minpts <- seq(5, k_, by = 5L)
         do.call(cbind, lapply(minpts, function(min_size){ dbscan::extractFOSC(cltree$hc, minPts = min_size)$cluster }))
-      })
+      }, cl = core_num)
       rsl_cl <- do.call(cbind, rsl_cl)
       save(rsl_cl, file = file.path(paste0(folder_name, "/rsl_cl.rdata"))) 
     }); gc()
